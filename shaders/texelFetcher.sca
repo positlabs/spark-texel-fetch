@@ -1,0 +1,15 @@
+/*
+
+  Implementation of texelFetch in SparkSL
+
+*/
+export vec4 texelFetch(std::Texture2d tex) {
+  vec2 uv = std::getVertexTexCoord();
+  vec2 rtSize = std::getRenderTargetSize();
+  vec2 texelUV = floor(fragment(uv) * rtSize) / rtSize;
+  return tex.sample(texelUV);
+}
+
+vec4 main (std::Texture2d tex){
+  return texelFetch(tex);
+}
