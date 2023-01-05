@@ -29,6 +29,28 @@ vec4 main (std::Texture2d tex){
 
 ```
 
+## Explanation
+
+I guess the benefit of texelFetch is that it samples discrete pixels and doesn’t blend anything together, so it’s more exact for situations that need pixel precision.
+
+Since we don’t have native texelFetch in spark, we can fake it with a little bit of math.
+
+Starting from the most basic way to sample textures in SparkSL, you will use the sample method of a std::Texture2d and pass in the UV from std::getVertexTexCoord()
+
+yourTexture.sample(uv);
+
+The next step is to make sure this is happening in the fragment shader (which deals in pixels), and not the vertex shader (which can only be as accurate as the number of vertices). So now our method call looks like this:
+
+yourTexture.sample(fragment(uv));
+
+But even though we are now in fragment / pixel space, your UV coordinates are a continuous value so there’s a chance that it will sample in between pixels and you’ll get an interpolated value. To prevent this, we need to essentially apply a pixelation shader onto our UV coordinates. We can get the pixel dimensions from from vec2 rtSize = std::getRenderTargetSize();, then slice our uv into pixels like this:
+
+vec2 texelUV = floor(fragment(uv) * rtSize) / rtSize;
+
+This method of multiplying, flooring, and dividing will make discrete pixels for us. Then we can finally sample our texels!
+
+yourTexture.sample(texelUV);
+
 
 ## Donations
 
