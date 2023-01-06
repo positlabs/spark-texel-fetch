@@ -29,9 +29,13 @@ vec4 main (std::Texture2d tex){
 
 ```
 
+## Incomplete Solution
+
+While this works in some cases, it's not a complete replica of texelFetch. See Dennis Rossiev's comment on the [FB post](https://www.facebook.com/groups/metasparkcommunity/posts/1551951565216880/)
+
 ## Explanation
 
-I guess the benefit of texelFetch is that it samples discrete pixels and doesn’t blend anything together, so it’s more exact for situations that need pixel precision.
+The benefit of texelFetch is that it samples discrete pixels and doesn’t blend anything together, so it’s more exact for situations that need pixel precision.
 
 Since we don’t have native texelFetch in spark, we can fake it with a little bit of math.
 
